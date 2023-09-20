@@ -19,7 +19,20 @@ export default function ListPosts() {
                 setPosts(posts));
         console.table(posts);
     }, []);
-
+    // return (
+    //     <section id="utilisateurs">
+    //         {/*{search}*/}
+    //         <h1 className="m-3">Liste des Users</h1>
+    //         <ul className="list-group m-3">
+    //             {posts.map (u => (
+    //                 <li className="list-group-item d-flex align-tiems-center">
+    //                     {u.image} {u.description}
+    //                     <button className="btn btn-sm ms-auto btn-outline-success">&#x2713;</button>
+    //                 </li>)
+    //             )}
+    //         </ul>
+    //     </section>
+    // );
     function like(){}
     function dislike(){}
 
