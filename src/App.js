@@ -6,6 +6,8 @@ import {Outlet, Route, Routes} from 'react-router-dom';
 import ListPosts from "./composants/ListPosts";
 import CreatePost from "./composants/CreatePost";
 import Image from "./composants/Image";
+import React from "react";
+import ListPosts02 from "./composants/ListPosts02";
 
 
 export default function App() {
@@ -14,12 +16,13 @@ export default function App() {
         <Routes>
           <Route path='/'>
             <Route path='/listposts' element={<ListPosts/>}/>
+              <Route path='/listposts02' element={<ListPosts02/>}/>
               <Route path='/createpost' element={<CreatePost/>}/>
               <Route path='/image' element={<Image/>}/>
           </Route>
         </Routes>
         <div className="App">
-          <Footer/>
+            <Footer />
         </div>
       </div>
   );

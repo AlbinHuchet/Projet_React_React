@@ -1,43 +1,57 @@
-import '../App.css';
-import React, { useEffect, useState } from "react";
+import React from 'react';
+import ImageUploading from 'react-images-uploading';
 
 export default function Image() {
+    const [images, setImages] = React.useState([]);
+    const maxNumber = 69;
 
-    const { REACT_APP_REST } = process.env;
-
-    const [file, setFile] = useState([]);
-
-    const handleFile = event => {
-        setFile(
-            URL.createObjectURL(event.target.files[0])
-        );
-        const formData = new FormData();
-        formData.append("fileupload", event.target.files[0]);
-
-        fetch("", {
-            method: 'POST',
-
-            body: formData,
-            dataType: "jsonp"
-        })
+    const onChange = (imageList, addUpdateIndex) => {
+        // data for submit
+        console.log(imageList, addUpdateIndex);
+        setImages(imageList);
     };
+
     return (
-        <>
-            <div className="card-user">
-                <img src={file} />
-                    <div>
-                        <label>IMAGE</label>
-                        <form
-                            type="file"
-                            required="required"
-                            onChange={handleFile}
-                        ></form>
+        <div className="App">
+            <ImageUploading
+                multiple
+                value={images}
+                onChange={onChange}
+                maxNumber={maxNumber}
+                dataURLKey="data_url"
+            >
+                {({
+                      imageList,
+                      onImageUpload,
+                      onImageRemoveAll,
+                      onImageUpdate,
+                      onImageRemove,
+                      isDragging,
+                      dragProps,
+                  }) => (
+                    // write your building UI
+                    <div className="upload__image-wrapper">
+                        <button
+                            style={isDragging ? { color: 'red' } : undefined}
+                            onClick={onImageUpload}
+                            {...dragProps}
+                        >
+                            Click or Drop here
+                        </button>
+                        &nbsp;
+                        <button onClick={onImageRemoveAll}>Remove all images</button>
+                        {imageList.map((image, index) => (
+                            <div key={index} className="image-item">
+                                <img src={image['data_url']} alt="" width="100" />
+                                <div className="image-item__btn-wrapper">
+                                    <button onClick={() => onImageUpdate(index)}>Update</button>
+                                    <button onClick={() => onImageRemove(index)}>Remove</button>
+                                </div>
+                            </div>
+                        ))}
                     </div>
-                <hr></hr>
-
-            </div>
-
-        </>
+                )}
+            </ImageUploading>
+        </div>
     );
 }
-

@@ -1,64 +1,67 @@
 import '../App.css';
 import {useEffect, useState} from "react";
 import * as React from 'react';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
+import axios, {get} from "axios";
+import {useNavigate} from "react-router-dom";
+import {getAllByTestId} from "@testing-library/react";
 
 export default function ListPosts() {
+    const navigate = useNavigate();
 
-    const [posts, setPosts] = useState([]);
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [selectedDescription, setSelectedDescription] = useState('');
 
-    useEffect(() => {
-        fetch('http://localhost:8080/api/allposts')
-            .then(res => res.json())
-            .then(posts=>
-                setPosts(posts));
-        console.table(posts);
-    }, []);
-    // return (
-    //     <section id="utilisateurs">
-    //         {/*{search}*/}
-    //         <h1 className="m-3">Liste des Users</h1>
-    //         <ul className="list-group m-3">
-    //             {posts.map (u => (
-    //                 <li className="list-group-item d-flex align-tiems-center">
-    //                     {u.image} {u.description}
-    //                     <button className="btn btn-sm ms-auto btn-outline-success">&#x2713;</button>
-    //                 </li>)
-    //             )}
-    //         </ul>
-    //     </section>
-    // );
-    function like(){}
-    function dislike(){}
+    const fileSelectedHandler = (event) =>{
+        if (event.target && event.target.files && event.target.files.length > 0) {
+            setSelectedImage(event.target.files[0]);
+        } else {
+            // Handle the case when there are no selected files or the event structure is unexpected.
+            // You can display an error message or perform other appropriate actions.
+            console.error('No files selected or unexpected event structure');
+        }
+    };
+    const descriptionChangeHandler = (event) =>{
+        setSelectedDescription(event.target.value)
+    }
+    const fileUploadHandler= () =>{
+        if (!selectedImage || !selectedDescription) {
+            // Handle validation or display an error message here
+            return;
+        }
+        const formData = new FormData();
+        formData.append('image', selectedImage);
+        formData.append('description', selectedDescription);
+
+
+        axios.post('http://localhost:8080/api/createpost', formData)
+            .then(response  => {
+                console.log('New post created:', response.data);
+                // navigate('/listposts');
+            })
+            .catch((error) => {
+                console.error('Error creating post:', error);
+            });
+    }
 
     return (
-        <ul className="list-group m-3">
-        {posts.map (p => (
-            <Card sx={{ maxWidth: 345 }}>
-                <CardMedia
-                    sx={{ height: 140 }}
-                    image={p.image}
-                    title={p.description}
+        <form onSubmit={fileUploadHandler}>
+            <div>
+                <label htmlFor="image">Image:</label>
+                <input type="file" id="image" name="image" onChange={fileSelectedHandler} />
+            </div>
+            <div>
+                <label htmlFor="description">Description:</label>
+                <input
+                    type="text"
+                    id="description"
+                    name="description"
+                    placeholder="Description"
+                    value={selectedDescription}
+                    onChange={descriptionChangeHandler}
                 />
-                <CardContent>
-                    {/*<Typography gutterBottom variant="h5" component="div">*/}
-                    {/*    Lizard*/}
-                    {/*</Typography>*/}
-                    <Typography variant="body2" color="text.secondary">
-                        {p.description}
-                    </Typography>
-                </CardContent>
-                <CardActions>
-                    <Button size="small" onclick={like}>Like</Button>
-                    <Button size="small" onclick={dislike}>Dislike</Button>
-                </CardActions>
-            </Card>))}
-            </ul>
-
-        );
-    }
+            </div>
+            <div>
+                <input type="submit" value="Submit" />
+            </div>
+        </form> )
+}
