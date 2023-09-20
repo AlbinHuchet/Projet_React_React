@@ -33,7 +33,7 @@ export default function ListPosts() {
         formData.append('description', selectedDescription);
 
 
-        axios.post('http://localhost:8080/api/createpost', formData)
+        axios.post('http://localhost:8080/api/createpost02', formData)
             .then(response  => {
                 console.log('New post created:', response.data);
                 navigate('/listposts02');
@@ -45,6 +45,7 @@ export default function ListPosts() {
 
     return (
         <form onSubmit={fileUploadHandler}>
+            <h1>Créer Publication</h1>
             <div>
                 <label htmlFor="image">Image:</label>
                 <input type="file" id="image" name="image" onChange={fileSelectedHandler} />

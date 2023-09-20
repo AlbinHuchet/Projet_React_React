@@ -32,7 +32,7 @@ export default function Footer() {
                 <Grid container direction="column" alignItems="center">
                     <Grid item xs={12}>
                         <Typography color="black" variant="h5">
-                            <NavLink to="/listposts" className="btn btn-outline-dark bg-light">  Bouton Liste posts  </NavLink>
+                            <NavLink to="/listposts" className="btn btn-outline-dark bg-light">  Créer posts avec image  </NavLink>
                             <NavLink to="/listposts02" className="btn btn-outline-dark bg-light">  Bouton Liste posts 02 </NavLink>
                             <NavLink to="/createpost" className="btn btn-outline-dark bg-light">  Créer post  </NavLink>                        </Typography>
                     </Grid>

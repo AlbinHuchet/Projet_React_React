@@ -27,8 +27,8 @@ export default function CreatePost() {
 
     return(
         <Container>
+            <h1>Créer publication sans image</h1>
             <Box component='form' onSubmit={handleSubmit} noValidate>
-                <TextField id="txtName" required name="image" label="Description" type="text"></TextField>
                 <TextField id="txtName" required name="description" label="Description" type="text"></TextField>
                 <Button type="submit">Add</Button>
             </Box>
