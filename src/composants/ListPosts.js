@@ -36,7 +36,7 @@ export default function ListPosts() {
         axios.post('http://localhost:8080/api/createpost', formData)
             .then(response  => {
                 console.log('New post created:', response.data);
-                // navigate('/listposts');
+                navigate('/listposts02');
             })
             .catch((error) => {
                 console.error('Error creating post:', error);
