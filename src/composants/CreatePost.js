@@ -1,37 +1,68 @@
 import '../App.css';
+import {useEffect, useState} from "react";
 import * as React from 'react';
+import axios, {get} from "axios";
 import {useNavigate} from "react-router-dom";
-import axios from "axios";
-import {Box, Button, Container, TextField} from "@mui/material";
-import Image from "./Image";
+import {getAllByTestId} from "@testing-library/react";
+
 export default function CreatePost() {
     const navigate = useNavigate();
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-            image: data.get('image'),
-            description: data.get('description')
-        });
-        let newPost = {
-            image: data.get('image'),
-            description: data.get('description')
-        };
 
-        axios.post('http://localhost:8080/api/createpost', newPost)
-            .then(newPost  => console.log(newPost))
-            .catch(error => console.error(error));
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [selectedDescription, setSelectedDescription] = useState('');
 
-        return navigate("/listposts");
+    const fileSelectedHandler = (event) =>{
+        if (event.target && event.target.files && event.target.files.length > 0) {
+            setSelectedImage(event.target.files[0]);
+        } else {
+            // Handle the case when there are no selected files or the event structure is unexpected.
+            // You can display an error message or perform other appropriate actions.
+            console.error('No files selected or unexpected event structure');
+        }
     };
+    const descriptionChangeHandler = (event) =>{
+        setSelectedDescription(event.target.value)
+    }
+    const fileUploadHandler= () =>{
+        if (!selectedImage || !selectedDescription) {
+            // Handle validation or display an error message here
+            return;
+        }
+        const formData = new FormData();
+        formData.append('image', selectedImage);
+        formData.append('description', selectedDescription);
+        console.log(formData);
 
-    return(
-        <Container>
-            <h1>Créer publication sans image</h1>
-            <Box component='form' onSubmit={handleSubmit} noValidate>
-                <TextField id="txtName" required name="description" label="Description" type="text"></TextField>
-                <Button type="submit">Add</Button>
-            </Box>
-        </Container>
-    )
+        axios.post('http://localhost:8080/api/createpost03', formData)
+            .then(response  => {
+                console.log('New post created:', response.data);
+                // navigate('/listposts02');
+            })
+            .catch((error) => {
+                console.error('Error creating post:', error);
+            });
+    }
+
+    return (
+        <form onSubmit={fileUploadHandler}>
+            <h1>Créer une Publication</h1>
+            <div>
+                <label htmlFor="image">Image:</label>
+                <input type="file" id="image" name="image" onChange={fileSelectedHandler} />
+            </div>
+            <div>
+                <label htmlFor="description">Description:</label>
+                <input
+                    type="text"
+                    id="description"
+                    name="description"
+                    placeholder="Description"
+                    value={selectedDescription}
+                    onChange={descriptionChangeHandler}
+                />
+            </div>
+            <div>
+                <input type="submit" value="Submit" />
+            </div>
+        </form> )
 }

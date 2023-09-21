@@ -1,57 +1,47 @@
-import React from 'react';
+import React, {useState} from 'react';
 import ImageUploading from 'react-images-uploading';
+import axios from "axios";
+import {Box, Button, Container, TextField} from "@mui/material";
 
 export default function Image() {
-    const [images, setImages] = React.useState([]);
-    const maxNumber = 69;
+    const [descriptions, setDescriptions] =useState(null);
+    const [images, setImages] =useState(null);
 
-    const onChange = (imageList, addUpdateIndex) => {
-        // data for submit
-        console.log(imageList, addUpdateIndex);
-        setImages(imageList);
+    const descriptionChangeHandler= (event) =>{
+        event.preventDefault();
+        const formData = new FormData();
+        formData.append('description', descriptions);
+
+        axios
+            .post('http://localhost:8080/api/createpost04', formData)
+            .then((response) => {
+                // Assuming the response contains the image data
+                setImages(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     };
-
     return (
-        <div className="App">
-            <ImageUploading
-                multiple
-                value={images}
-                onChange={onChange}
-                maxNumber={maxNumber}
-                dataURLKey="data_url"
-            >
-                {({
-                      imageList,
-                      onImageUpload,
-                      onImageRemoveAll,
-                      onImageUpdate,
-                      onImageRemove,
-                      isDragging,
-                      dragProps,
-                  }) => (
-                    // write your building UI
-                    <div className="upload__image-wrapper">
-                        <button
-                            style={isDragging ? { color: 'red' } : undefined}
-                            onClick={onImageUpload}
-                            {...dragProps}
-                        >
-                            Click or Drop here
-                        </button>
-                        &nbsp;
-                        <button onClick={onImageRemoveAll}>Remove all images</button>
-                        {imageList.map((image, index) => (
-                            <div key={index} className="image-item">
-                                <img src={image['data_url']} alt="" width="100" />
-                                <div className="image-item__btn-wrapper">
-                                    <button onClick={() => onImageUpdate(index)}>Update</button>
-                                    <button onClick={() => onImageRemove(index)}>Remove</button>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                )}
-            </ImageUploading>
+        <div>
+            <h1>Description</h1>
+            <Container>
+                <Box component="form" onSubmit={descriptionChangeHandler} noValidate>
+                    <TextField
+                        id="txtName"
+                        required
+                        name="description"
+                        label="description"
+                        type="text"
+                        value={descriptions}
+                        onChange={(e) => setDescriptions(e.target.value)}
+                    />
+                    <Button type="submit">Add</Button>
+                </Box>
+            </Container>
+            <div>
+                {images && <img src={`data:image/png;base64,${images}`} alt="Image" />}
+            </div>
         </div>
     );
 }
