@@ -40,7 +40,9 @@ export default function Image() {
                 </Box>
             </Container>
             <div>
-                {images && <img src={`data:image/png;base64,${images}`} alt="Image" />}
+
+                {images && <img src={images} alt="My JPG Image" />}
+                {/*<img src={`data:image/jpg;base64,${images}`} alt="Image" />*/}
             </div>
         </div>
     );
